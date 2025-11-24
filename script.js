@@ -205,7 +205,7 @@ function scrollToElement(elementId) {
 function loadProducts() {
     showLoading();
     
-    fetch(`${API_BASE_URL}/products`)
+    fetch(`${API_BASE_URL}action=getproducts`)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -279,7 +279,7 @@ function searchProducts() {
     
     showLoading();
     
-    fetch(`${API_BASE_URL}/products`)
+    fetch(`${API_BASE_URL}action=getproducts`)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -315,7 +315,7 @@ function filterByCategory(category) {
     
     showLoading();
     
-    fetch(`${API_BASE_URL}/products`)
+    fetch(`${API_BASE_URL}action=getproducts`)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -340,7 +340,7 @@ function filterByCategory(category) {
 function submitOrder(orderData) {
     showLoading();
     
-    fetch(`${API_BASE_URL}/order`, {
+    fetch(`${API_BASE_URL}action=getorder`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -369,7 +369,7 @@ function submitOrder(orderData) {
 function trackOrder(orderId) {
     showLoading();
     
-    fetch(`${API_BASE_URL}/track?id=${orderId}`)
+    fetch(`${API_BASE_URL}action=gettrack?id=${orderId}`)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -391,7 +391,7 @@ function trackOrder(orderId) {
 function adminLogin(username, password) {
     showLoading();
     
-    fetch(`${API_BASE_URL}/admin?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`)
+    fetch(`${API_BASE_URL}action=getadmin?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`)
         .then(response => response.json())
         .then(data => {
             hideLoading();
@@ -458,7 +458,7 @@ function adminLogout() {
 
 // Update order status
 function updateOrderStatus(orderId, status) {
-    return fetch(`${API_BASE_URL}/admin`, {
+    return fetch(`${API_BASE_URL}action=getadmin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -473,7 +473,7 @@ function updateOrderStatus(orderId, status) {
 
 // Update payment status
 function updatePaymentStatus(orderId, status) {
-    return fetch(`${API_BASE_URL}/admin`, {
+    return fetch(`${API_BASE_URL}action=getadmin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -488,7 +488,7 @@ function updatePaymentStatus(orderId, status) {
 
 // Create product
 function createProduct(productData) {
-    return fetch(`${API_BASE_URL}/admin`, {
+    return fetch(`${API_BASE_URL}action=getadmin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -502,7 +502,7 @@ function createProduct(productData) {
 
 // Edit product
 function editProduct(productData) {
-    return fetch(`${API_BASE_URL}/admin`, {
+    return fetch(`${API_BASE_URL}action=getadmin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -516,7 +516,7 @@ function editProduct(productData) {
 
 // Delete product
 function deleteProduct(productId) {
-    return fetch(`${API_BASE_URL}/admin`, {
+    return fetch(`${API_BASE_URL}action=getadmin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
