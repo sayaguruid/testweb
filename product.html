@@ -9,223 +9,366 @@
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-primary text-white py-3">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="h3 mb-0">
-                        <i class="fas fa-arrow-left me-2" onclick="history.back()" style="cursor: pointer;"></i>
-                        Detail Produk
-                    </h1>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="index.html" class="btn btn-light btn-sm">
-                        <i class="fas fa-home me-1"></i>
-                        Katalog
-                    </a>
-                </div>
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store me-2"></i>Toko Online
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="track.html">Track Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-login.html">Admin</a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="container py-4">
-        <!-- Loading -->
-        <div id="loading" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+    <!-- Product Detail Section -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Memuat detail produk...</p>
             </div>
-            <p class="mt-2">Memuat detail produk...</p>
-        </div>
 
-        <!-- Product Details -->
-        <div id="productDetails" style="display: none;">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <img id="productImage" src="" class="card-img-top" alt="">
+            <!-- Product Detail -->
+            <div id="productDetail" style="display: none;">
+                <div class="row">
+                    <!-- Product Image -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="product-image-container">
+                            <img id="productImage" src="" alt="" class="img-fluid rounded shadow">
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 id="productName" class="card-title"></h2>
-                            <p class="h4 text-primary" id="productPrice"></p>
-                            <p><strong>Stok:</strong> <span id="productStock"></span></p>
-                            <p id="productDescription"></p>
+
+                    <!-- Product Info -->
+                    <div class="col-lg-6">
+                        <div class="product-info">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
+                                    <li class="breadcrumb-item active" id="categoryBreadcrumb">Kategori</li>
+                                    <li class="breadcrumb-item active" id="productNameBreadcrumb">Nama Produk</li>
+                                </ol>
+                            </nav>
+
+                            <h1 id="productName" class="mb-3"></h1>
                             
-                            <div class="mt-4">
-                                <label for="quantity" class="form-label">Jumlah:</label>
-                                <div class="input-group" style="max-width: 200px;">
-                                    <button class="btn btn-outline-secondary" type="button" id="decreaseQty">
-                                        <i class="fas fa-minus"></i>
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="badge bg-success me-2" id="stockBadge">
+                                    <i class="fas fa-check-circle me-1"></i>Tersedia
+                                </span>
+                                <span class="text-muted" id="categoryBadge"></span>
+                            </div>
+
+                            <div class="price-section mb-4">
+                                <h2 class="text-primary" id="productPrice"></h2>
+                                <small class="text-muted">Harga per item</small>
+                            </div>
+
+                            <div class="description-section mb-4">
+                                <h5>Deskripsi Produk</h5>
+                                <p id="productDescription"></p>
+                            </div>
+
+                            <div class="stock-info mb-4">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span id="stockInfo"></span> stok tersedia
+                                </div>
+                            </div>
+
+                            <div class="order-form">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="quantity" class="form-label">Jumlah</label>
+                                        <div class="input-group">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" class="form-control text-center" id="quantity" value="1" min="1" readonly>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Total Harga</label>
+                                        <h4 class="text-primary" id="totalPrice">Rp 0</h4>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary btn-lg" onclick="orderNow()">
+                                        <i class="fas fa-shopping-cart me-2"></i>Pesan Sekarang
                                     </button>
-                                    <input type="number" class="form-control text-center" id="quantity" value="1" min="1">
-                                    <button class="btn btn-outline-secondary" type="button" id="increaseQty">
-                                        <i class="fas fa-plus"></i>
+                                    <button class="btn btn-outline-secondary" onclick="window.history.back()">
+                                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Katalog
                                     </button>
                                 </div>
                             </div>
-                            
-                            <div class="mt-4">
-                                <p><strong>Total Harga:</strong></p>
-                                <p class="h3 text-primary" id="totalPrice">Rp 0</p>
-                            </div>
-                            
-                            <div class="d-grid gap-2 mt-4">
-                                <button class="btn btn-primary btn-lg" id="orderBtn">
-                                    <i class="fas fa-shopping-cart me-2"></i>
-                                    Pesan Sekarang
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details Tabs -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button">
+                                    <i class="fas fa-info-circle me-2"></i>Detail Produk
                                 </button>
-                                <a href="index.html" class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left me-1"></i>
-                                    Kembali ke Katalog
-                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button">
+                                    <i class="fas fa-truck me-2"></i>Pengiriman
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment" type="button">
+                                    <i class="fas fa-credit-card me-2"></i>Pembayaran
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="productTabsContent">
+                            <div class="tab-pane fade show active" id="details" role="tabpanel">
+                                <div class="p-4">
+                                    <h5>Informasi Produk</h5>
+                                    <table class="table">
+                                        <tr>
+                                            <td><strong>ID Produk:</strong></td>
+                                            <td id="productId"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kategori:</strong></td>
+                                            <td id="productCategory"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Stok:</strong></td>
+                                            <td id="productStock"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tanggal Ditambahkan:</strong></td>
+                                            <td id="productDate"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="shipping" role="tabpanel">
+                                <div class="p-4">
+                                    <h5>Informasi Pengiriman</h5>
+                                    <ul>
+                                        <li>Pengiriman menggunakan jasa ekspedisi terpercaya</li>
+                                        <li>Estimasi pengiriman 1-3 hari (tergantung lokasi)</li>
+                                        <li>Gratis ongkir untuk pembelian minimal Rp 500.000</li>
+                                        <li>Packing aman dan rapi</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="payment" role="tabpanel">
+                                <div class="p-4">
+                                    <h5>Metode Pembayaran</h5>
+                                    <ul>
+                                        <li><strong>QRIS:</strong> Scan QR code untuk pembayaran instant</li>
+                                        <li><strong>Transfer Bank:</strong> BCA, BRI, BNI, Mandiri</li>
+                                        <li><strong>COD:</strong> Bayar di tempat (khusus area tertentu)</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Product Not Found -->
-        <div id="productNotFound" class="text-center py-5" style="display: none;">
-            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-            <h4>Produk Tidak Ditemukan</h4>
-            <p class="text-muted">Produk yang Anda cari tidak tersedia.</p>
-            <a href="index.html" class="btn btn-primary">
-                <i class="fas fa-home me-1"></i>
-                Kembali ke Katalog
-            </a>
+            <!-- Product Not Found -->
+            <div id="productNotFound" class="text-center py-5" style="display: none;">
+                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                <h4>Produk Tidak Ditemukan</h4>
+                <p class="text-muted">Maaf, produk yang Anda cari tidak tersedia.</p>
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Katalog
+                </a>
+            </div>
         </div>
-    </main>
+    </section>
 
     <!-- Footer -->
-    <footer class="bg-light py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0 text-muted">&copy; 2024 Toko Online. All rights reserved.</p>
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Toko Online</h5>
+                    <p>Menyediakan produk berkualitas dengan harga terjangkau</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Kontak</h5>
+                    <p><i class="fab fa-whatsapp me-2"></i>WhatsApp: +62 812-3456-7890</p>
+                    <p><i class="fas fa-envelope me-2"></i>Email: info@toko.com</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2024 Toko Online. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
     <script src="script.js"></script>
     <script>
         let currentProduct = null;
+        let currentQuantity = 1;
 
-        // Load product details when page loads
+        // Load product detail when page loads
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
             
             if (productId) {
-                loadProduct(productId);
+                loadProductDetail(productId);
             } else {
                 showProductNotFound();
             }
-            
-            // Quantity controls
-            document.getElementById('decreaseQty').addEventListener('click', function() {
-                const qtyInput = document.getElementById('quantity');
-                if (qtyInput.value > 1) {
-                    qtyInput.value = parseInt(qtyInput.value) - 1;
-                    updateTotalPrice();
-                }
-            });
-            
-            document.getElementById('increaseQty').addEventListener('click', function() {
-                const qtyInput = document.getElementById('quantity');
-                const maxStock = currentProduct ? currentProduct.stock : 999;
-                if (parseInt(qtyInput.value) < maxStock) {
-                    qtyInput.value = parseInt(qtyInput.value) + 1;
-                    updateTotalPrice();
-                }
-            });
-            
-            document.getElementById('quantity').addEventListener('input', updateTotalPrice);
-            
-            // Order button
-            document.getElementById('orderBtn').addEventListener('click', function() {
-                const quantity = parseInt(document.getElementById('quantity').value);
-                if (currentProduct && quantity > 0) {
-                    window.location.href = `order.html?product=${currentProduct.id}&qty=${quantity}`;
-                }
-            });
         });
 
-        // Load product from API
-        async function loadProduct(productId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/product?id=${productId}`);
-                const product = await response.json();
-                
-                document.getElementById('loading').style.display = 'none';
-                
-                if (product.error) {
-                    showProductNotFound();
-                    return;
-                }
-                
-                currentProduct = product;
-                displayProduct(product);
-                
-            } catch (error) {
-                console.error('Error loading product:', error);
-                document.getElementById('loading').innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Gagal memuat detail produk. Silakan refresh halaman.
-                    </div>
-                `;
-            }
+        function loadProductDetail(productId) {
+            showLoading();
+            
+            fetch(`${API_BASE_URL}/product?id=${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.status === 'success') {
+                        currentProduct = data.data;
+                        displayProductDetail(currentProduct);
+                    } else {
+                        showProductNotFound();
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showError('Gagal memuat detail produk');
+                });
         }
 
-        // Display product details
-        function displayProduct(product) {
-            document.getElementById('productImage').src = product.image || `https://picsum.photos/seed/${product.id}/400/300.jpg`;
-            document.getElementById('productImage').alt = product.name;
+        function displayProductDetail(product) {
+            // Update breadcrumb
+            document.getElementById('categoryBreadcrumb').textContent = product.category || 'Uncategorized';
+            document.getElementById('productNameBreadcrumb').textContent = product.name;
+            
+            // Update product info
             document.getElementById('productName').textContent = product.name;
-            document.getElementById('productPrice').textContent = `Rp ${formatNumber(product.price)}`;
-            document.getElementById('productStock').textContent = product.stock > 0 ? product.stock : 'Habis';
-            document.getElementById('productDescription').textContent = product.description || 'Tidak ada deskripsi produk.';
+            document.getElementById('productPrice').textContent = formatCurrency(product.price);
+            document.getElementById('productDescription').textContent = product.description || 'Tidak ada deskripsi tersedia.';
+            document.getElementById('stockInfo').textContent = product.stock;
+            document.getElementById('categoryBadge').textContent = product.category || 'Uncategorized';
             
-            // Set max quantity
-            const qtyInput = document.getElementById('quantity');
-            qtyInput.max = product.stock > 0 ? product.stock : 1;
+            // Update product image
+            const productImage = document.getElementById('productImage');
+            productImage.src = product.image || 'https://via.placeholder.com/600x400?text=No+Image';
+            productImage.alt = product.name;
             
-            if (product.stock <= 0) {
-                qtyInput.disabled = true;
-                document.getElementById('decreaseQty').disabled = true;
-                document.getElementById('increaseQty').disabled = true;
-                document.getElementById('orderBtn').disabled = true;
-                document.getElementById('orderBtn').innerHTML = `
-                    <i class="fas fa-times me-2"></i>
-                    Stok Habis
-                `;
+            // Update product details tabs
+            document.getElementById('productId').textContent = product.id;
+            document.getElementById('productCategory').textContent = product.category || 'Uncategorized';
+            document.getElementById('productStock').textContent = product.stock;
+            document.getElementById('productDate').textContent = product.created_date || '-';
+            
+            // Update stock badge
+            const stockBadge = document.getElementById('stockBadge');
+            if (product.stock > 0) {
+                stockBadge.className = 'badge bg-success me-2';
+                stockBadge.innerHTML = '<i class="fas fa-check-circle me-1"></i>Tersedia';
+            } else {
+                stockBadge.className = 'badge bg-danger me-2';
+                stockBadge.innerHTML = '<i class="fas fa-times-circle me-1"></i>Habis';
             }
             
+            // Reset quantity
+            currentQuantity = 1;
+            document.getElementById('quantity').value = 1;
             updateTotalPrice();
-            document.getElementById('productDetails').style.display = 'block';
+            
+            // Show product detail
+            document.getElementById('productDetail').style.display = 'block';
         }
 
-        // Show product not found
-        function showProductNotFound() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('productNotFound').style.display = 'block';
+        function increaseQuantity() {
+            if (currentProduct && currentQuantity < currentProduct.stock) {
+                currentQuantity++;
+                document.getElementById('quantity').value = currentQuantity;
+                updateTotalPrice();
+            }
         }
 
-        // Update total price
+        function decreaseQuantity() {
+            if (currentQuantity > 1) {
+                currentQuantity--;
+                document.getElementById('quantity').value = currentQuantity;
+                updateTotalPrice();
+            }
+        }
+
         function updateTotalPrice() {
+            if (currentProduct) {
+                const total = currentProduct.price * currentQuantity;
+                document.getElementById('totalPrice').textContent = formatCurrency(total);
+            }
+        }
+
+        function orderNow() {
             if (!currentProduct) return;
             
-            const quantity = parseInt(document.getElementById('quantity').value) || 0;
-            const totalPrice = currentProduct.price * quantity;
-            document.getElementById('totalPrice').textContent = `Rp ${formatNumber(totalPrice)}`;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            if (quantity > currentProduct.stock) {
+                showError('Jumlah melebihi stok yang tersedia');
+                return;
+            }
+            
+            // Redirect to order page with product info
+            const orderParams = new URLSearchParams({
+                product_id: currentProduct.id,
+                product_name: currentProduct.name,
+                price: currentProduct.price,
+                quantity: quantity,
+                total: currentProduct.price * quantity
+            });
+            
+            window.location.href = `order.html?${orderParams.toString()}`;
         }
 
-        // Format number
-        function formatNumber(num) {
-            return new Intl.NumberFormat('id-ID').format(num);
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('productDetail').style.display = 'none';
+            document.getElementById('productNotFound').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+
+        function showProductNotFound() {
+            hideLoading();
+            document.getElementById('productDetail').style.display = 'none';
+            document.getElementById('productNotFound').style.display = 'block';
         }
     </script>
 </body>
