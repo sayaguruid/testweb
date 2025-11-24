@@ -9,143 +9,216 @@
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-primary text-white py-3">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="h3 mb-0">
-                        <i class="fas fa-shopping-cart me-2"></i>
-                        Form Pemesanan
-                    </h1>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="index.html" class="btn btn-light btn-sm">
-                        <i class="fas fa-home me-1"></i>
-                        Katalog
-                    </a>
-                </div>
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store me-2"></i>Toko Online
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="track.html">Track Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-login.html">Admin</a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="container py-4">
-        <!-- Loading -->
-        <div id="loading" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Memuat form pemesanan...</p>
-        </div>
-
-        <!-- Order Form -->
-        <div id="orderForm" style="display: none;">
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <div class="card">
+    <!-- Order Form Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-clipboard-list me-2"></i>
-                                Formulir Pemesanan
-                            </h5>
+                            <h4 class="mb-0">
+                                <i class="fas fa-shopping-cart me-2"></i>Form Pemesanan
+                            </h4>
                         </div>
                         <div class="card-body">
-                            <form id="checkoutForm">
-                                <!-- Product Info -->
-                                <div class="row mb-4">
-                                    <div class="col-md-4">
-                                        <img id="productImage" src="" class="img-fluid rounded" alt="">
-                                    </div>
+                            <!-- Product Summary -->
+                            <div class="alert alert-info mb-4">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-box me-2"></i>Ringkasan Pesanan
+                                </h5>
+                                <div class="row">
                                     <div class="col-md-8">
-                                        <h5 id="productName"></h5>
-                                        <p class="mb-1"><strong>Harga:</strong> <span id="productPrice"></span></p>
+                                        <p class="mb-1"><strong>Produk:</strong> <span id="productName"></span></p>
                                         <p class="mb-1"><strong>Jumlah:</strong> <span id="productQuantity"></span></p>
-                                        <p class="mb-0"><strong>Total:</strong> <span id="productTotal" class="h5 text-primary"></span></p>
+                                        <p class="mb-0"><strong>Harga per item:</strong> <span id="productPrice"></span></p>
+                                    </div>
+                                    <div class="col-md-4 text-md-end">
+                                        <h5 class="text-primary">Total: <span id="totalPrice"></span></h5>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- Customer Info -->
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="customerName" class="form-label">Nama Lengkap *</label>
-                                        <input type="text" class="form-control" id="customerName" required>
+                            <!-- Order Form -->
+                            <form id="orderForm">
+                                <!-- Customer Information -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">
+                                        <i class="fas fa-user me-2"></i>Informasi Pelanggan
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="customerName" class="form-label">Nama Lengkap *</label>
+                                            <input type="text" class="form-control" id="customerName" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="customerPhone" class="form-label">Nomor WhatsApp *</label>
+                                            <input type="tel" class="form-control" id="customerPhone" placeholder="08123456789" required>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="customerPhone" class="form-label">Nomor WhatsApp *</label>
-                                        <input type="tel" class="form-control" id="customerPhone" required 
-                                               placeholder="08123456789">
+                                    <div class="mb-3">
+                                        <label for="customerNote" class="form-label">Catatan (Opsional)</label>
+                                        <textarea class="form-control" id="customerNote" rows="3" placeholder="Masukkan catatan atau permintaan khusus..."></textarea>
                                     </div>
-                                </div>
-
-                                <!-- Notes -->
-                                <div class="mb-3">
-                                    <label for="customerNotes" class="form-label">Catatan (Opsional)</label>
-                                    <textarea class="form-control" id="customerNotes" rows="3" 
-                                              placeholder="Catatan pesanan Anda..."></textarea>
                                 </div>
 
                                 <!-- Payment Method -->
                                 <div class="mb-4">
-                                    <label class="form-label">Metode Pembayaran *</label>
+                                    <h5 class="mb-3">
+                                        <i class="fas fa-credit-card me-2"></i>Metode Pembayaran
+                                    </h5>
                                     <div class="row">
-                                        <div class="col-md-4 mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="paymentMethod" 
-                                                       id="paymentQRIS" value="QRIS" required>
-                                                <label class="form-check-label" for="paymentQRIS">
-                                                    <i class="fas fa-qrcode me-1"></i>
-                                                    QRIS
-                                                </label>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card payment-method-card" onclick="selectPaymentMethod('qris')">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-qrcode fa-2x mb-2 text-primary"></i>
+                                                    <h6>QRIS</h6>
+                                                    <small class="text-muted">Scan QR Code</small>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="paymentMethod" 
-                                                       id="paymentTransfer" value="Transfer">
-                                                <label class="form-check-label" for="paymentTransfer">
-                                                    <i class="fas fa-university me-1"></i>
-                                                    Transfer Bank
-                                                </label>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card payment-method-card" onclick="selectPaymentMethod('transfer')">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-university fa-2x mb-2 text-primary"></i>
+                                                    <h6>Transfer Bank</h6>
+                                                    <small class="text-muted">BCA/BRI/BNI/Mandiri</small>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 mb-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="paymentMethod" 
-                                                       id="paymentCOD" value="COD">
-                                                <label class="form-check-label" for="paymentCOD">
-                                                    <i class="fas fa-hand-holding-usd me-1"></i>
-                                                    COD
-                                                </label>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card payment-method-card" onclick="selectPaymentMethod('cod')">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-hand-holding-usd fa-2x mb-2 text-primary"></i>
+                                                    <h6>COD</h6>
+                                                    <small class="text-muted">Bayar di tempat</small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <input type="hidden" id="paymentMethod" required>
                                 </div>
 
                                 <!-- Payment Instructions -->
-                                <div id="paymentInstructions" style="display: none;">
-                                    <div class="alert alert-info">
-                                        <h6><i class="fas fa-info-circle me-2"></i>Instruksi Pembayaran</h6>
-                                        <div id="paymentDetails"></div>
+                                <div id="paymentInstructions" class="mb-4" style="display: none;">
+                                    <h5 class="mb-3">
+                                        <i class="fas fa-info-circle me-2"></i>Instruksi Pembayaran
+                                    </h5>
+                                    
+                                    <!-- QRIS Instructions -->
+                                    <div id="qrisInstructions" class="payment-instruction" style="display: none;">
+                                        <div class="alert alert-success">
+                                            <h6><i class="fas fa-qrcode me-2"></i>Pembayaran QRIS</h6>
+                                            <ol>
+                                                <li>Scan QR Code di bawah ini menggunakan aplikasi e-wallet atau mobile banking</li>
+                                                <li>Masukkan jumlah pembayaran: <strong id="qrisAmount"></strong></li>
+                                                <li>Konfirmasi pembayaran</li>
+                                                <li>Upload bukti pembayaran di bawah</li>
+                                            </ol>
+                                            <div class="text-center mt-3">
+                                                <img src="https://via.placeholder.com/200x200?text=QR+Code" alt="QRIS" class="img-fluid" style="max-width: 200px;">
+                                                <p class="mt-2 small text-muted">Ganti dengan QR Code Anda</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Transfer Instructions -->
+                                    <div id="transferInstructions" class="payment-instruction" style="display: none;">
+                                        <div class="alert alert-info">
+                                            <h6><i class="fas fa-university me-2"></i>Pembayaran Transfer Bank</h6>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="bank-account mb-2">
+                                                        <strong>BCA:</strong><br>
+                                                        1234567890<br>
+                                                        <small>a.n. Toko Jaya Abadi</small>
+                                                    </div>
+                                                    <div class="bank-account mb-2">
+                                                        <strong>BRI:</strong><br>
+                                                        0987654321<br>
+                                                        <small>a.n. Toko Jaya Abadi</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="bank-account mb-2">
+                                                        <strong>BNI:</strong><br>
+                                                        1122334455<br>
+                                                        <small>a.n. Toko Jaya Abadi</small>
+                                                    </div>
+                                                    <div class="bank-account mb-2">
+                                                        <strong>Mandiri:</strong><br>
+                                                        5544332211<br>
+                                                        <small>a.n. Toko Jaya Abadi</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <p class="mb-0">Transfer sejumlah: <strong id="transferAmount"></strong></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- COD Instructions -->
+                                    <div id="codInstructions" class="payment-instruction" style="display: none;">
+                                        <div class="alert alert-warning">
+                                            <h6><i class="fas fa-hand-holding-usd me-2"></i>Pembayaran COD (Cash on Delivery)</h6>
+                                            <p>Pembayaran dilakukan saat barang sampai di lokasi Anda.</p>
+                                            <ul>
+                                                <li>Siapkan uang pas sesuai total pembayaran</li>
+                                                <li>Pastikan alamat pengiriman lengkap dan jelas</li>
+                                                <li>Waktu pengiriman: 09.00 - 17.00 WIB</li>
+                                            </ul>
+                                            <p class="mb-0">Total pembayaran: <strong id="codAmount"></strong></p>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Payment Proof Upload -->
-                                <div id="paymentProofSection" style="display: none;">
+                                <div id="paymentProofSection" class="mb-4" style="display: none;">
+                                    <h5 class="mb-3">
+                                        <i class="fas fa-image me-2"></i>Upload Bukti Pembayaran
+                                    </h5>
                                     <div class="mb-3">
-                                        <label for="paymentProof" class="form-label">Upload Bukti Pembayaran *</label>
-                                        <input type="file" class="form-control" id="paymentProof" accept="image/*">
-                                        <div class="form-text">Format: JPG, PNG, GIF. Maksimal 5MB.</div>
+                                        <label for="paymentProof" class="form-label">Pilih Gambar Bukti Pembayaran *</label>
+                                        <input type="file" class="form-control" id="paymentProof" accept="image/*" onchange="previewPaymentProof(event)">
+                                        <small class="text-muted">Format: JPG, PNG, GIF. Maksimal 5MB</small>
                                     </div>
-                                    <div id="paymentProofPreview" class="mb-3"></div>
+                                    <div id="paymentProofPreview" class="text-center mb-3" style="display: none;">
+                                        <img id="paymentProofImage" src="" alt="Preview" class="img-fluid" style="max-width: 300px;">
+                                    </div>
                                 </div>
 
                                 <!-- Submit Button -->
-                                <div class="d-grid">
+                                <div class="d-grid gap-2">
                                     <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-check me-2"></i>
-                                        Konfirmasi Pesanan
+                                        <i class="fas fa-check me-2"></i>Konfirmasi Pesanan
                                     </button>
+                                    <a href="index.html" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Katalog
+                                    </a>
                                 </div>
                             </form>
                         </div>
@@ -153,288 +226,199 @@
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Product Not Found -->
-        <div id="productNotFound" class="text-center py-5" style="display: none;">
-            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-            <h4>Produk Tidak Ditemukan</h4>
-            <p class="text-muted">Produk yang Anda pesan tidak tersedia.</p>
-            <a href="index.html" class="btn btn-primary">
-                <i class="fas fa-home me-1"></i>
-                Kembali ke Katalog
-            </a>
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5>Sedang Memproses Pesanan</h5>
+                    <p class="text-muted">Mohon tunggu sebentar...</p>
+                </div>
+            </div>
         </div>
-    </main>
+    </div>
 
     <!-- Footer -->
-    <footer class="bg-light py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0 text-muted">&copy; 2024 Toko Online. All rights reserved.</p>
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Toko Online</h5>
+                    <p>Menyediakan produk berkualitas dengan harga terjangkau</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Kontak</h5>
+                    <p><i class="fab fa-whatsapp me-2"></i>WhatsApp: +62 812-3456-7890</p>
+                    <p><i class="fas fa-envelope me-2"></i>Email: info@toko.com</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2024 Toko Online. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
     <script src="script.js"></script>
     <script>
-        let currentProduct = null;
-        let currentQuantity = 1;
+        let orderData = {};
 
-        // Load order form when page loads
+        // Load order data when page loads
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('product');
-            const qty = urlParams.get('qty');
             
-            if (productId) {
-                currentQuantity = parseInt(qty) || 1;
-                loadProduct(productId);
-            } else {
-                showProductNotFound();
-            }
+            orderData = {
+                product_id: urlParams.get('product_id'),
+                product_name: urlParams.get('product_name'),
+                price: parseInt(urlParams.get('price')),
+                quantity: parseInt(urlParams.get('quantity')),
+                total: parseInt(urlParams.get('total'))
+            };
             
-            // Payment method change handler
-            document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
-                radio.addEventListener('change', handlePaymentMethodChange);
-            });
-            
-            // Payment proof upload handler
-            document.getElementById('paymentProof').addEventListener('change', handlePaymentProofUpload);
-            
-            // Form submit handler
-            document.getElementById('checkoutForm').addEventListener('submit', handleFormSubmit);
+            displayOrderSummary();
         });
 
-        // Load product from API
-        async function loadProduct(productId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/product?id=${productId}`);
-                const product = await response.json();
-                
-                document.getElementById('loading').style.display = 'none';
-                
-                if (product.error) {
-                    showProductNotFound();
-                    return;
-                }
-                
-                currentProduct = product;
-                displayProductInfo(product);
-                
-            } catch (error) {
-                console.error('Error loading product:', error);
-                document.getElementById('loading').innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Gagal memuat produk. Silakan refresh halaman.
-                    </div>
-                `;
-            }
+        function displayOrderSummary() {
+            document.getElementById('productName').textContent = orderData.product_name;
+            document.getElementById('productQuantity').textContent = orderData.quantity;
+            document.getElementById('productPrice').textContent = formatCurrency(orderData.price);
+            document.getElementById('totalPrice').textContent = formatCurrency(orderData.total);
         }
 
-        // Display product information
-        function displayProductInfo(product) {
-            document.getElementById('productImage').src = product.image || `https://picsum.photos/seed/${product.id}/300/200.jpg`;
-            document.getElementById('productImage').alt = product.name;
-            document.getElementById('productName').textContent = product.name;
-            document.getElementById('productPrice').textContent = `Rp ${formatNumber(product.price)}`;
-            document.getElementById('productQuantity').textContent = currentQuantity;
+        function selectPaymentMethod(method) {
+            // Remove previous selection
+            document.querySelectorAll('.payment-method-card').forEach(card => {
+                card.classList.remove('border-primary', 'bg-light');
+            });
             
-            const total = product.price * currentQuantity;
-            document.getElementById('productTotal').textContent = `Rp ${formatNumber(total)}`;
+            // Add selection to clicked card
+            event.currentTarget.classList.add('border-primary', 'bg-light');
             
-            document.getElementById('orderForm').style.display = 'block';
-        }
-
-        // Handle payment method change
-        function handlePaymentMethodChange() {
-            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-            const instructionsDiv = document.getElementById('paymentInstructions');
-            const detailsDiv = document.getElementById('paymentDetails');
-            const proofSection = document.getElementById('paymentProofSection');
+            // Set payment method
+            document.getElementById('paymentMethod').value = method;
             
-            // Hide payment proof section initially
-            proofSection.style.display = 'none';
+            // Hide all payment instructions
+            document.querySelectorAll('.payment-instruction').forEach(instruction => {
+                instruction.style.display = 'none';
+            });
             
-            switch(selectedMethod) {
-                case 'QRIS':
-                    instructionsDiv.style.display = 'block';
-                    detailsDiv.innerHTML = `
-                        <p><strong>1. Scan QR Code di bawah ini:</strong></p>
-                        <div class="text-center my-3">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=YOUR_QR_DATA" 
-                                 alt="QRIS" class="img-fluid" style="max-width: 200px;">
-                        </div>
-                        <p><strong>2. Masukkan nominal: Rp ${formatNumber(currentProduct.price * currentQuantity)}</strong></p>
-                        <p><strong>3. Selesaikan pembayaran</strong></p>
-                        <p class="mb-0"><em>* QR Code contoh, silakan ganti dengan QR Code Anda</em></p>
-                    `;
-                    proofSection.style.display = 'block';
+            // Show relevant payment instruction
+            document.getElementById('paymentInstructions').style.display = 'block';
+            
+            switch(method) {
+                case 'qris':
+                    document.getElementById('qrisInstructions').style.display = 'block';
+                    document.getElementById('qrisAmount').textContent = formatCurrency(orderData.total);
+                    document.getElementById('paymentProofSection').style.display = 'block';
                     break;
-                    
-                case 'Transfer':
-                    instructionsDiv.style.display = 'block';
-                    detailsDiv.innerHTML = `
-                        <p><strong>Silakan transfer ke:</strong></p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>BCA:</strong><br>1234567890<br>a.n. Toko Online</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>BRI:</strong><br>0987654321<br>a.n. Toko Online</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>BNI:</strong><br>1122334455<br>a.n. Toko Online</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Mandiri:</strong><br>5544332211<br>a.n. Toko Online</p>
-                            </div>
-                        </div>
-                        <p class="mb-0"><strong>Nominal: Rp ${formatNumber(currentProduct.price * currentQuantity)}</strong></p>
-                    `;
-                    proofSection.style.display = 'block';
+                case 'transfer':
+                    document.getElementById('transferInstructions').style.display = 'block';
+                    document.getElementById('transferAmount').textContent = formatCurrency(orderData.total);
+                    document.getElementById('paymentProofSection').style.display = 'block';
                     break;
-                    
-                case 'COD':
-                    instructionsDiv.style.display = 'block';
-                    detailsDiv.innerHTML = `
-                        <p><strong>Pembayaran dilakukan saat barang diterima:</strong></p>
-                        <ul>
-                            <li>Siapkan uang pas: Rp ${formatNumber(currentProduct.price * currentQuantity)}</li>
-                            <li>Pastikan alamat pengiriman sudah benar</li>
-                            <li>Admin akan menghubungi Anda untuk konfirmasi pengiriman</li>
-                        </ul>
-                    `;
+                case 'cod':
+                    document.getElementById('codInstructions').style.display = 'block';
+                    document.getElementById('codAmount').textContent = formatCurrency(orderData.total);
+                    document.getElementById('paymentProofSection').style.display = 'none';
                     break;
             }
         }
 
-        // Handle payment proof upload
-        function handlePaymentProofUpload(event) {
+        function previewPaymentProof(event) {
             const file = event.target.files[0];
-            const previewDiv = document.getElementById('paymentProofPreview');
-            
             if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    showAlert('Ukuran file maksimal 5MB', 'danger');
-                    event.target.value = '';
-                    return;
-                }
-                
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    previewDiv.innerHTML = `
-                        <div class="alert alert-success">
-                            <strong>File berhasil diupload:</strong> ${file.name}<br>
-                            <img src="${e.target.result}" alt="Preview" class="img-fluid mt-2" 
-                                 style="max-width: 200px;">
-                        </div>
-                    `;
+                    document.getElementById('paymentProofImage').src = e.target.result;
+                    document.getElementById('paymentProofPreview').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // Handle form submit
-        async function handleFormSubmit(event) {
-            event.preventDefault();
+        // Handle form submission
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
+            // Validate payment method
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            if (!paymentMethod) {
+                showError('Silakan pilih metode pembayaran');
+                return;
+            }
+            
+            // Validate payment proof for QRIS and Transfer
+            if (paymentMethod !== 'cod') {
+                const paymentProof = document.getElementById('paymentProof').files[0];
+                if (!paymentProof) {
+                    showError('Silakan upload bukti pembayaran');
+                    return;
+                }
+            }
+            
+            // Show loading modal
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+            loadingModal.show();
+            
+            // Prepare order data
             const formData = {
                 name: document.getElementById('customerName').value,
                 phone: document.getElementById('customerPhone').value,
-                product_id: currentProduct.id,
-                qty: currentQuantity,
-                note: document.getElementById('customerNotes').value,
-                payment_method: document.querySelector('input[name="paymentMethod"]:checked').value
+                product_id: orderData.product_id,
+                qty: orderData.quantity,
+                note: document.getElementById('customerNote').value,
+                payment_method: paymentMethod,
+                payment_proof: ''
             };
             
-            // Add payment proof if needed
-            if (formData.payment_method !== 'COD') {
+            // Convert payment proof to base64 if exists
+            if (paymentMethod !== 'cod') {
                 const paymentProofFile = document.getElementById('paymentProof').files[0];
-                if (!paymentProofFile) {
-                    showAlert('Silakan upload bukti pembayaran', 'danger');
-                    return;
-                }
-                
-                // Convert to base64
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    formData.payment_proof = e.target.result;
-                    submitOrder(formData);
-                };
-                reader.readAsDataURL(paymentProofFile);
-            } else {
-                submitOrder(formData);
-            }
-        }
-
-        // Submit order to API
-        async function submitOrder(formData) {
-            try {
-                const submitBtn = document.querySelector('button[type="submit"]');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = `
-                    <span class="spinner-border spinner-border-sm me-2"></span>
-                    Memproses...
-                `;
-                
-                const response = await fetch(`${API_BASE_URL}/order`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // Redirect to success page
-                    window.location.href = `success.html?id=${result.order_id}`;
+                if (paymentProofFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        formData.payment_proof = e.target.result;
+                        submitOrder(formData, loadingModal);
+                    };
+                    reader.readAsDataURL(paymentProofFile);
                 } else {
-                    showAlert(result.error || 'Gagal memproses pesanan', 'danger');
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = `
-                        <i class="fas fa-check me-2"></i>
-                        Konfirmasi Pesanan
-                    `;
+                    submitOrder(formData, loadingModal);
                 }
-                
-            } catch (error) {
-                console.error('Error submitting order:', error);
-                showAlert('Terjadi kesalahan. Silakan coba lagi.', 'danger');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `
-                    <i class="fas fa-check me-2"></i>
-                    Konfirmasi Pesanan
-                `;
+            } else {
+                submitOrder(formData, loadingModal);
             }
-        }
+        });
 
-        // Show product not found
-        function showProductNotFound() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('productNotFound').style.display = 'block';
-        }
-
-        // Format number
-        function formatNumber(num) {
-            return new Intl.NumberFormat('id-ID').format(num);
-        }
-
-        // Show alert
-        function showAlert(message, type = 'info') {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
+        function submitOrder(formData, loadingModal) {
+            fetch(`${API_BASE_URL}/order`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingModal.hide();
+                if (data.status === 'success') {
+                    // Redirect to success page
+                    window.location.href = `success.html?order_id=${data.data.order_id}&tracking_link=${encodeURIComponent(data.data.tracking_link)}`;
+                } else {
+                    showError(data.message || 'Gagal membuat pesanan');
+                }
+            })
+            .catch(error => {
+                loadingModal.hide();
+                showError('Terjadi kesalahan. Silakan coba lagi.');
+            });
         }
     </script>
 </body>
