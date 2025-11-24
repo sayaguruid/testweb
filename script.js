@@ -1,299 +1,170 @@
-// Global configuration
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwvf_yiXLGVKDBCb0HEekSfp_qzSWaNBfinRndXtrzSXyrPZlXM5L1s3856gFsHeazn/exec';
+// 📱 JAVASCRIPT FOR SINGLE VENDOR E-COMMERCE
 
-// Utility functions
-function formatNumber(num) {
-    return new Intl.NumberFormat('id-ID').format(num);
+// ===== CONFIGURATION =====
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwvf_yiXLGVKDBCb0HEekSfp_qzSWaNBfinRndXtrzSXyrPZlXM5L1s3856gFsHeazn/exec'; // Ganti dengan URL Web App Anda
+
+// ===== UTILITY FUNCTIONS =====
+
+// Format currency to Indonesian Rupiah
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(amount);
 }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-function showAlert(message, type = 'info') {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+// Show error message
+function showError(message) {
+    const alertHtml = `
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     `;
-    document.body.appendChild(alertDiv);
     
+    const alertContainer = document.createElement('div');
+    alertContainer.innerHTML = alertHtml;
+    
+    const container = document.querySelector('.container') || document.body;
+    container.insertBefore(alertContainer, container.firstChild);
+    
+    // Auto dismiss after 5 seconds
     setTimeout(() => {
-        alertDiv.remove();
+        if (alertContainer.parentNode) {
+            alertContainer.remove();
+        }
     }, 5000);
 }
 
-// Authentication functions
-function isAdminLoggedIn() {
-    const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
-    return token !== null;
-}
-
-function getAdminToken() {
-    return localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
-}
-
-function logout() {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUsername');
-    sessionStorage.removeItem('adminToken');
-    sessionStorage.removeItem('adminUsername');
-    window.location.href = 'admin-login.html';
-}
-
-// API helper functions
-async function makeAPIRequest(endpoint, options = {}) {
-    const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
-
-    // Add authorization token for admin endpoints
-    if (endpoint.includes('/admin/') && isAdminLoggedIn()) {
-        defaultOptions.headers.Authorization = `Bearer ${getAdminToken()}`;
-    }
-
-    const finalOptions = {
-        ...defaultOptions,
-        ...options,
-        headers: {
-            ...defaultOptions.headers,
-            ...options.headers,
-        },
-    };
-
-    try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, finalOptions);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+// Show success message
+function showSuccess(message) {
+    const alertHtml = `
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    const alertContainer = document.createElement('div');
+    alertContainer.innerHTML = alertHtml;
+    
+    const container = document.querySelector('.container') || document.body;
+    container.insertBefore(alertContainer, container.firstChild);
+    
+    // Auto dismiss after 5 seconds
+    setTimeout(() => {
+        if (alertContainer.parentNode) {
+            alertContainer.remove();
         }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('API Request Error:', error);
-        throw error;
+    }, 5000);
+}
+
+// Show loading spinner
+function showLoading(elementId = 'loadingSpinner') {
+    const spinner = document.getElementById(elementId);
+    if (spinner) {
+        spinner.style.display = 'block';
     }
 }
 
-// Product functions
-async function getProducts() {
-    return await makeAPIRequest('/products');
+// Hide loading spinner
+function hideLoading(elementId = 'loadingSpinner') {
+    const spinner = document.getElementById(elementId);
+    if (spinner) {
+        spinner.style.display = 'none';
+    }
 }
 
-async function getProduct(productId) {
-    return await makeAPIRequest(`/product?id=${productId}`);
-}
-
-async function createProduct(productData) {
-    return await makeAPIRequest('/admin/create-product', {
-        method: 'POST',
-        body: JSON.stringify(productData),
-    });
-}
-
-async function updateProduct(productData) {
-    return await makeAPIRequest('/admin/edit-product', {
-        method: 'POST',
-        body: JSON.stringify(productData),
-    });
-}
-
-async function deleteProduct(productId) {
-    return await makeAPIRequest('/admin/delete-product', {
-        method: 'POST',
-        body: JSON.stringify({ id: productId }),
-    });
-}
-
-// Order functions
-async function createOrder(orderData) {
-    return await makeAPIRequest('/order', {
-        method: 'POST',
-        body: JSON.stringify(orderData),
-    });
-}
-
-async function trackOrder(orderId) {
-    return await makeAPIRequest(`/track?id=${orderId}`);
-}
-
-async function getOrders() {
-    return await makeAPIRequest('/admin/orders');
-}
-
-async function updateOrderStatus(orderData) {
-    return await makeAPIRequest('/admin/update-order-status', {
-        method: 'POST',
-        body: JSON.stringify(orderData),
-    });
-}
-
-// Admin authentication
-async function adminLogin(credentials) {
-    return await makeAPIRequest('/admin/login', {
-        method: 'POST',
-        body: JSON.stringify(credentials),
-    });
-}
-
-// Form validation
+// Validate email format
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
+// Validate phone number (Indonesia format)
 function validatePhone(phone) {
-    const re = /^08[0-9]{8,12}$/;
-    return re.test(phone.replace(/[^0-9]/g, ''));
+    const re = /^(\+62|62|0)8[1-9][0-9]{6,11}$/;
+    return re.test(phone.replace(/[\s-]/g, ''));
 }
 
-function validateRequired(fields) {
-    const errors = [];
-    fields.forEach(field => {
-        if (!field.value || field.value.trim() === '') {
-            errors.push(`${field.name || field.id} is required`);
-        }
-    });
-    return errors;
-}
-
-// File handling
-function readFileAsDataURL(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-}
-
-function validateImageFile(file) {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+// Format phone number to standard format
+function formatPhone(phone) {
+    // Remove all non-digit characters
+    let cleaned = phone.replace(/\D/g, '');
     
-    if (!allowedTypes.includes(file.type)) {
-        throw new Error('File must be an image (JPG, PNG, or GIF)');
+    // Add +62 prefix if needed
+    if (cleaned.startsWith('0')) {
+        cleaned = '62' + cleaned.substring(1);
+    } else if (cleaned.startsWith('62')) {
+        cleaned = '62' + cleaned.substring(2);
+    } else if (!cleaned.startsWith('62')) {
+        cleaned = '62' + cleaned;
     }
     
-    if (file.size > maxSize) {
-        throw new Error('File size must be less than 5MB');
+    return cleaned;
+}
+
+// Generate random ID
+function generateRandomId(prefix, length = 6) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = prefix + '-';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    
-    return true;
+    return result;
 }
 
-// Loading states
-function showLoading(element, text = 'Loading...') {
-    element.innerHTML = `
-        <div class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">${text}</span>
-            </div>
-            <p class="mt-2">${text}</p>
-        </div>
-    `;
-}
-
-function hideLoading(element) {
-    element.innerHTML = '';
-}
-
-// URL helpers
-function getURLParameter(name) {
+// Get URL parameters
+function getUrlParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
 }
 
-function updateURLParameter(param, value) {
+// Set URL parameter
+function setUrlParameter(name, value) {
     const url = new URL(window.location);
-    url.searchParams.set(param, value);
+    url.searchParams.set(name, value);
     window.history.replaceState({}, '', url);
 }
 
-// Local storage helpers
-function setLocalStorage(key, value) {
-    try {
-        localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-        console.error('Error saving to localStorage:', error);
-    }
-}
-
-function getLocalStorage(key, defaultValue = null) {
-    try {
-        const item = localStorage.getItem(key);
-        return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-        console.error('Error reading from localStorage:', error);
-        return defaultValue;
-    }
-}
-
-function removeLocalStorage(key) {
-    try {
-        localStorage.removeItem(key);
-    } catch (error) {
-        console.error('Error removing from localStorage:', error);
-    }
-}
-
-// Copy to clipboard
+// Copy text to clipboard
 function copyToClipboard(text) {
     if (navigator.clipboard) {
-        return navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(text).then(() => {
+            showSuccess('Tersalin ke clipboard!');
+        }).catch(err => {
+            fallbackCopyToClipboard(text);
+        });
     } else {
-        // Fallback for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
+        fallbackCopyToClipboard(text);
+    }
+}
+
+// Fallback for older browsers
+function fallbackCopyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
         document.execCommand('copy');
-        document.body.removeChild(textArea);
-        return Promise.resolve();
-    }
-}
-
-// WhatsApp integration
-function createWhatsAppMessage(phone, message) {
-    const formattedPhone = phone.replace(/[^0-9]/g, '');
-    const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
-}
-
-function openWhatsApp(phone, message) {
-    const url = createWhatsAppMessage(phone, message);
-    window.open(url, '_blank');
-}
-
-// Image generation placeholder
-function generatePlaceholderImage(text, width = 300, height = 200) {
-    return `https://picsum.photos/seed/${text}/${width}/${height}.jpg`;
-}
-
-// Error handling
-function handleAPIError(error, defaultMessage = 'An error occurred') {
-    console.error('API Error:', error);
-    
-    let message = defaultMessage;
-    if (error.message) {
-        message = error.message;
+        showSuccess('Tersalin ke clipboard!');
+    } catch (err) {
+        showError('Gagal menyalin teks');
     }
     
-    showAlert(message, 'danger');
+    document.body.removeChild(textArea);
 }
 
-// Debounce function for search inputs
+// Debounce function for search
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -306,42 +177,432 @@ function debounce(func, wait) {
     };
 }
 
-// Export functions for use in other scripts
-window.TokoOnline = {
-    API_BASE_URL,
-    formatNumber,
-    formatDate,
-    showAlert,
-    isAdminLoggedIn,
-    getAdminToken,
-    logout,
-    makeAPIRequest,
-    getProducts,
-    getProduct,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-    createOrder,
-    trackOrder,
-    getOrders,
-    updateOrderStatus,
-    adminLogin,
-    validateEmail,
-    validatePhone,
-    validateRequired,
-    readFileAsDataURL,
-    validateImageFile,
+// Check if element is in viewport
+function isInViewport(element) {
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+
+// Smooth scroll to element
+function scrollToElement(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+// ===== PRODUCT FUNCTIONS =====
+
+// Load all products
+function loadProducts() {
+    showLoading();
+    
+    fetch(`${API_BASE_URL}/products`)
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.status === 'success') {
+                displayProducts(data.data);
+            } else {
+                showError('Gagal memuat produk');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showError('Terjadi kesalahan. Silakan coba lagi.');
+        });
+}
+
+// Display products in grid
+function displayProducts(products) {
+    const grid = document.getElementById('productsGrid');
+    const noProducts = document.getElementById('noProducts');
+    
+    if (!grid) return;
+    
+    if (products.length === 0) {
+        grid.style.display = 'none';
+        if (noProducts) noProducts.style.display = 'block';
+        return;
+    }
+    
+    grid.style.display = 'flex';
+    if (noProducts) noProducts.style.display = 'none';
+    
+    grid.innerHTML = products.map(product => `
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card product-card h-100">
+                <img src="${product.image || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                     class="card-img-top" alt="${product.name}">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${product.name}</h5>
+                    <p class="card-text">${product.description ? product.description.substring(0, 100) + '...' : 'Tidak ada deskripsi'}</p>
+                    <div class="product-price">${formatCurrency(product.price)}</div>
+                    <div class="product-stock">
+                        <span class="badge ${product.stock > 0 ? 'bg-success' : 'bg-danger'}">
+                            ${product.stock > 0 ? `Stok: ${product.stock}` : 'Habis'}
+                        </span>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="btn-group w-100" role="group">
+                            <a href="product.html?id=${product.id}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>Detail
+                            </a>
+                            <a href="order.html?product_id=${product.id}&product_name=${encodeURIComponent(product.name)}&price=${product.price}&quantity=1&total=${product.price}" 
+                               class="btn btn-primary btn-sm">
+                                <i class="fas fa-shopping-cart me-1"></i>Beli
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Search products
+function searchProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    if (!searchTerm) {
+        loadProducts();
+        return;
+    }
+    
+    showLoading();
+    
+    fetch(`${API_BASE_URL}/products`)
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.status === 'success') {
+                const filteredProducts = data.data.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    (product.description && product.description.toLowerCase().includes(searchTerm)) ||
+                    (product.category && product.category.toLowerCase().includes(searchTerm))
+                );
+                displayProducts(filteredProducts);
+            } else {
+                showError('Gagal mencari produk');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showError('Terjadi kesalahan. Silakan coba lagi.');
+        });
+}
+
+// Filter products by category
+function filterByCategory(category) {
+    // Update button states
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    if (category === 'all') {
+        loadProducts();
+        return;
+    }
+    
+    showLoading();
+    
+    fetch(`${API_BASE_URL}/products`)
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.status === 'success') {
+                const filteredProducts = data.data.filter(product => 
+                    product.category === category
+                );
+                displayProducts(filteredProducts);
+            } else {
+                showError('Gagal memfilter produk');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showError('Terjadi kesalahan. Silakan coba lagi.');
+        });
+}
+
+// ===== ORDER FUNCTIONS =====
+
+// Submit order
+function submitOrder(orderData) {
+    showLoading();
+    
+    fetch(`${API_BASE_URL}/order`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading();
+        if (data.status === 'success') {
+            // Redirect to success page
+            window.location.href = `success.html?order_id=${data.data.order_id}&tracking_link=${encodeURIComponent(data.data.tracking_link)}`;
+        } else {
+            showError(data.message || 'Gagal membuat pesanan');
+        }
+    })
+    .catch(error => {
+        hideLoading();
+        showError('Terjadi kesalahan. Silakan coba lagi.');
+    });
+}
+
+// ===== TRACKING FUNCTIONS =====
+
+// Track order by ID
+function trackOrder(orderId) {
+    showLoading();
+    
+    fetch(`${API_BASE_URL}/track?id=${orderId}`)
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.status === 'success') {
+                displayOrderDetails(data.data);
+            } else {
+                showError('Pesanan tidak ditemukan');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showError('Terjadi kesalahan. Silakan coba lagi.');
+        });
+}
+
+// ===== ADMIN FUNCTIONS =====
+
+// Admin login
+function adminLogin(username, password) {
+    showLoading();
+    
+    fetch(`${API_BASE_URL}/admin?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`)
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.status === 'success') {
+                // Store admin session
+                const adminData = {
+                    username: data.data.username,
+                    email: data.data.email,
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('adminData', JSON.stringify(adminData));
+                
+                showSuccess('Login berhasil!');
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 1000);
+            } else {
+                showError('Username atau password salah');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            showError('Terjadi kesalahan. Silakan coba lagi.');
+        });
+}
+
+// Check admin authentication
+function checkAdminAuth() {
+    const adminData = localStorage.getItem('adminData');
+    if (!adminData) {
+        window.location.href = 'admin-login.html';
+        return false;
+    }
+    
+    try {
+        const admin = JSON.parse(adminData);
+        const loginTime = new Date(admin.loginTime);
+        const now = new Date();
+        const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+        
+        // Auto logout after 24 hours
+        if (hoursDiff > 24) {
+            localStorage.removeItem('adminData');
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+        
+        return admin;
+    } catch (error) {
+        localStorage.removeItem('adminData');
+        window.location.href = 'admin-login.html';
+        return false;
+    }
+}
+
+// Admin logout
+function adminLogout() {
+    localStorage.removeItem('adminData');
+    window.location.href = 'admin-login.html';
+}
+
+// Update order status
+function updateOrderStatus(orderId, status) {
+    return fetch(`${API_BASE_URL}/admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'update-order-status',
+            order_id: orderId,
+            status: status
+        })
+    });
+}
+
+// Update payment status
+function updatePaymentStatus(orderId, status) {
+    return fetch(`${API_BASE_URL}/admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'update-payment-status',
+            order_id: orderId,
+            status: status
+        })
+    });
+}
+
+// Create product
+function createProduct(productData) {
+    return fetch(`${API_BASE_URL}/admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'create-product',
+            ...productData
+        })
+    });
+}
+
+// Edit product
+function editProduct(productData) {
+    return fetch(`${API_BASE_URL}/admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'edit-product',
+            ...productData
+        })
+    });
+}
+
+// Delete product
+function deleteProduct(productId) {
+    return fetch(`${API_BASE_URL}/admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'delete-product',
+            id: productId
+        })
+    });
+}
+
+// ===== INITIALIZATION =====
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Initialize popovers
+    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl);
+    });
+    
+    // Add smooth scrolling to all links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Add scroll to top button
+    const scrollToTopBtn = document.createElement('button');
+    scrollToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    scrollToTopBtn.className = 'btn btn-primary position-fixed';
+    scrollToTopBtn.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; display: none; width: 50px; height: 50px; border-radius: 50%;';
+    scrollToTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.appendChild(scrollToTopBtn);
+    
+    // Show/hide scroll to top button
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.style.display = 'block';
+        } else {
+            scrollToTopBtn.style.display = 'none';
+        }
+    });
+});
+
+// Export functions for global use
+window.EcommerceApp = {
+    formatCurrency,
+    showError,
+    showSuccess,
     showLoading,
     hideLoading,
-    getURLParameter,
-    updateURLParameter,
-    setLocalStorage,
-    getLocalStorage,
-    removeLocalStorage,
+    validateEmail,
+    validatePhone,
+    formatPhone,
+    generateRandomId,
+    getUrlParameter,
+    setUrlParameter,
     copyToClipboard,
-    createWhatsAppMessage,
-    openWhatsApp,
-    generatePlaceholderImage,
-    handleAPIError,
-    debounce
+    debounce,
+    isInViewport,
+    scrollToElement,
+    loadProducts,
+    searchProducts,
+    filterByCategory,
+    submitOrder,
+    trackOrder,
+    adminLogin,
+    checkAdminAuth,
+    adminLogout,
+    updateOrderStatus,
+    updatePaymentStatus,
+    createProduct,
+    editProduct,
+    deleteProduct
 };
