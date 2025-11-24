@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pemesanan - Toko Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-primary text-white py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        Form Pemesanan
+                    </h1>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="index.html" class="btn btn-light btn-sm">
+                        <i class="fas fa-home me-1"></i>
+                        Katalog
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <!-- Loading -->
+        <div id="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Memuat form pemesanan...</p>
+        </div>
+
+        <!-- Order Form -->
+        <div id="orderForm" style="display: none;">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-clipboard-list me-2"></i>
+                                Formulir Pemesanan
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="checkoutForm">
+                                <!-- Product Info -->
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <img id="productImage" src="" class="img-fluid rounded" alt="">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h5 id="productName"></h5>
+                                        <p class="mb-1"><strong>Harga:</strong> <span id="productPrice"></span></p>
+                                        <p class="mb-1"><strong>Jumlah:</strong> <span id="productQuantity"></span></p>
+                                        <p class="mb-0"><strong>Total:</strong> <span id="productTotal" class="h5 text-primary"></span></p>
+                                    </div>
+                                </div>
+
+                                <!-- Customer Info -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="customerName" class="form-label">Nama Lengkap *</label>
+                                        <input type="text" class="form-control" id="customerName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="customerPhone" class="form-label">Nomor WhatsApp *</label>
+                                        <input type="tel" class="form-control" id="customerPhone" required 
+                                               placeholder="08123456789">
+                                    </div>
+                                </div>
+
+                                <!-- Notes -->
+                                <div class="mb-3">
+                                    <label for="customerNotes" class="form-label">Catatan (Opsional)</label>
+                                    <textarea class="form-control" id="customerNotes" rows="3" 
+                                              placeholder="Catatan pesanan Anda..."></textarea>
+                                </div>
+
+                                <!-- Payment Method -->
+                                <div class="mb-4">
+                                    <label class="form-label">Metode Pembayaran *</label>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" 
+                                                       id="paymentQRIS" value="QRIS" required>
+                                                <label class="form-check-label" for="paymentQRIS">
+                                                    <i class="fas fa-qrcode me-1"></i>
+                                                    QRIS
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" 
+                                                       id="paymentTransfer" value="Transfer">
+                                                <label class="form-check-label" for="paymentTransfer">
+                                                    <i class="fas fa-university me-1"></i>
+                                                    Transfer Bank
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" 
+                                                       id="paymentCOD" value="COD">
+                                                <label class="form-check-label" for="paymentCOD">
+                                                    <i class="fas fa-hand-holding-usd me-1"></i>
+                                                    COD
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Payment Instructions -->
+                                <div id="paymentInstructions" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <h6><i class="fas fa-info-circle me-2"></i>Instruksi Pembayaran</h6>
+                                        <div id="paymentDetails"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Payment Proof Upload -->
+                                <div id="paymentProofSection" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="paymentProof" class="form-label">Upload Bukti Pembayaran *</label>
+                                        <input type="file" class="form-control" id="paymentProof" accept="image/*">
+                                        <div class="form-text">Format: JPG, PNG, GIF. Maksimal 5MB.</div>
+                                    </div>
+                                    <div id="paymentProofPreview" class="mb-3"></div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-check me-2"></i>
+                                        Konfirmasi Pesanan
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Not Found -->
+        <div id="productNotFound" class="text-center py-5" style="display: none;">
+            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+            <h4>Produk Tidak Ditemukan</h4>
+            <p class="text-muted">Produk yang Anda pesan tidak tersedia.</p>
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home me-1"></i>
+                Kembali ke Katalog
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2024 Toko Online. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let currentProduct = null;
+        let currentQuantity = 1;
+
+        // Load order form when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product');
+            const qty = urlParams.get('qty');
+            
+            if (productId) {
+                currentQuantity = parseInt(qty) || 1;
+                loadProduct(productId);
+            } else {
+                showProductNotFound();
+            }
+            
+            // Payment method change handler
+            document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+                radio.addEventListener('change', handlePaymentMethodChange);
+            });
+            
+            // Payment proof upload handler
+            document.getElementById('paymentProof').addEventListener('change', handlePaymentProofUpload);
+            
+            // Form submit handler
+            document.getElementById('checkoutForm').addEventListener('submit', handleFormSubmit);
+        });
+
+        // Load product from API
+        async function loadProduct(productId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/product?id=${productId}`);
+                const product = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                if (product.error) {
+                    showProductNotFound();
+                    return;
+                }
+                
+                currentProduct = product;
+                displayProductInfo(product);
+                
+            } catch (error) {
+                console.error('Error loading product:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Gagal memuat produk. Silakan refresh halaman.
+                    </div>
+                `;
+            }
+        }
+
+        // Display product information
+        function displayProductInfo(product) {
+            document.getElementById('productImage').src = product.image || `https://picsum.photos/seed/${product.id}/300/200.jpg`;
+            document.getElementById('productImage').alt = product.name;
+            document.getElementById('productName').textContent = product.name;
+            document.getElementById('productPrice').textContent = `Rp ${formatNumber(product.price)}`;
+            document.getElementById('productQuantity').textContent = currentQuantity;
+            
+            const total = product.price * currentQuantity;
+            document.getElementById('productTotal').textContent = `Rp ${formatNumber(total)}`;
+            
+            document.getElementById('orderForm').style.display = 'block';
+        }
+
+        // Handle payment method change
+        function handlePaymentMethodChange() {
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            const instructionsDiv = document.getElementById('paymentInstructions');
+            const detailsDiv = document.getElementById('paymentDetails');
+            const proofSection = document.getElementById('paymentProofSection');
+            
+            // Hide payment proof section initially
+            proofSection.style.display = 'none';
+            
+            switch(selectedMethod) {
+                case 'QRIS':
+                    instructionsDiv.style.display = 'block';
+                    detailsDiv.innerHTML = `
+                        <p><strong>1. Scan QR Code di bawah ini:</strong></p>
+                        <div class="text-center my-3">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=YOUR_QR_DATA" 
+                                 alt="QRIS" class="img-fluid" style="max-width: 200px;">
+                        </div>
+                        <p><strong>2. Masukkan nominal: Rp ${formatNumber(currentProduct.price * currentQuantity)}</strong></p>
+                        <p><strong>3. Selesaikan pembayaran</strong></p>
+                        <p class="mb-0"><em>* QR Code contoh, silakan ganti dengan QR Code Anda</em></p>
+                    `;
+                    proofSection.style.display = 'block';
+                    break;
+                    
+                case 'Transfer':
+                    instructionsDiv.style.display = 'block';
+                    detailsDiv.innerHTML = `
+                        <p><strong>Silakan transfer ke:</strong></p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>BCA:</strong><br>1234567890<br>a.n. Toko Online</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>BRI:</strong><br>0987654321<br>a.n. Toko Online</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>BNI:</strong><br>1122334455<br>a.n. Toko Online</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Mandiri:</strong><br>5544332211<br>a.n. Toko Online</p>
+                            </div>
+                        </div>
+                        <p class="mb-0"><strong>Nominal: Rp ${formatNumber(currentProduct.price * currentQuantity)}</strong></p>
+                    `;
+                    proofSection.style.display = 'block';
+                    break;
+                    
+                case 'COD':
+                    instructionsDiv.style.display = 'block';
+                    detailsDiv.innerHTML = `
+                        <p><strong>Pembayaran dilakukan saat barang diterima:</strong></p>
+                        <ul>
+                            <li>Siapkan uang pas: Rp ${formatNumber(currentProduct.price * currentQuantity)}</li>
+                            <li>Pastikan alamat pengiriman sudah benar</li>
+                            <li>Admin akan menghubungi Anda untuk konfirmasi pengiriman</li>
+                        </ul>
+                    `;
+                    break;
+            }
+        }
+
+        // Handle payment proof upload
+        function handlePaymentProofUpload(event) {
+            const file = event.target.files[0];
+            const previewDiv = document.getElementById('paymentProofPreview');
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('Ukuran file maksimal 5MB', 'danger');
+                    event.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <strong>File berhasil diupload:</strong> ${file.name}<br>
+                            <img src="${e.target.result}" alt="Preview" class="img-fluid mt-2" 
+                                 style="max-width: 200px;">
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Handle form submit
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('customerName').value,
+                phone: document.getElementById('customerPhone').value,
+                product_id: currentProduct.id,
+                qty: currentQuantity,
+                note: document.getElementById('customerNotes').value,
+                payment_method: document.querySelector('input[name="paymentMethod"]:checked').value
+            };
+            
+            // Add payment proof if needed
+            if (formData.payment_method !== 'COD') {
+                const paymentProofFile = document.getElementById('paymentProof').files[0];
+                if (!paymentProofFile) {
+                    showAlert('Silakan upload bukti pembayaran', 'danger');
+                    return;
+                }
+                
+                // Convert to base64
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    formData.payment_proof = e.target.result;
+                    submitOrder(formData);
+                };
+                reader.readAsDataURL(paymentProofFile);
+            } else {
+                submitOrder(formData);
+            }
+        }
+
+        // Submit order to API
+        async function submitOrder(formData) {
+            try {
+                const submitBtn = document.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Memproses...
+                `;
+                
+                const response = await fetch(`${API_BASE_URL}/order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Redirect to success page
+                    window.location.href = `success.html?id=${result.order_id}`;
+                } else {
+                    showAlert(result.error || 'Gagal memproses pesanan', 'danger');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `
+                        <i class="fas fa-check me-2"></i>
+                        Konfirmasi Pesanan
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error submitting order:', error);
+                showAlert('Terjadi kesalahan. Silakan coba lagi.', 'danger');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <i class="fas fa-check me-2"></i>
+                    Konfirmasi Pesanan
+                `;
+            }
+        }
+
+        // Show product not found
+        function showProductNotFound() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('productNotFound').style.display = 'block';
+        }
+
+        // Format number
+        function formatNumber(num) {
+            return new Intl.NumberFormat('id-ID').format(num);
+        }
+
+        // Show alert
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
