@@ -1,5 +1,5 @@
 // Global configuration
-const API_BASE_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwvf_yiXLGVKDBCb0HEekSfp_qzSWaNBfinRndXtrzSXyrPZlXM5L1s3856gFsHeazn/exec';
 
 // Utility functions
 function formatNumber(num) {
