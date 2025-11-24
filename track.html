@@ -3,361 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracking Pesanan - Toko Online</title>
+    <title>Track Order - Toko Online</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-primary text-white py-3">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="h3 mb-0">
-                        <i class="fas fa-search me-2"></i>
-                        Tracking Pesanan
-                    </h1>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="index.html" class="btn btn-light btn-sm">
-                        <i class="fas fa-home me-1"></i>
-                        Katalog
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container py-4">
-        <!-- Search Section -->
-        <div class="row mb-4">
-            <div class="col-lg-6 mx-auto">
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-search me-2"></i>
-                            Cari Pesanan
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="orderIdInput" 
-                                   placeholder="Masukkan Order ID (contoh: ORD-AB12CD)">
-                            <button class="btn btn-primary" type="button" id="searchBtn">
-                                <i class="fas fa-search me-1"></i>
-                                Cari
-                            </button>
-                        </div>
-                        <div class="mt-2">
-                            <small class="text-muted">
-                                Order ID biasanya diberikan setelah Anda melakukan pemesanan.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Loading -->
-        <div id="loading" class="text-center py-5" style="display: none;">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Mencari pesanan...</p>
-        </div>
-
-        <!-- Order Details -->
-        <div id="orderDetails" style="display: none;">
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <!-- Order Info Card -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-receipt me-2"></i>
-                                Detail Pesanan
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Order ID:</strong></p>
-                                    <p class="h5 text-primary" id="orderId"></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Tanggal Pesanan:</strong></p>
-                                    <p id="orderDate"></p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Nama:</strong></p>
-                                    <p id="customerName"></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>WhatsApp:</strong></p>
-                                    <p id="customerPhone"></p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Produk:</strong></p>
-                                    <p id="productName"></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Jumlah:</strong></p>
-                                    <p id="productQuantity"></p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Metode Pembayaran:</strong></p>
-                                    <p id="paymentMethod"></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Total Harga:</strong></p>
-                                    <p class="h5 text-primary" id="totalPrice"></p>
-                                </div>
-                            </div>
-                            <div id="notesSection" style="display: none;">
-                                <hr>
-                                <p><strong>Catatan:</strong></p>
-                                <p id="customerNotes"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Status Tracking Card -->
-                    <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-tasks me-2"></i>
-                                Status Pesanan
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <!-- Payment Status -->
-                            <div class="mb-4">
-                                <h6><i class="fas fa-credit-card me-2"></i>Status Pembayaran</h6>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" id="paymentProgressBar" role="progressbar"></div>
-                                </div>
-                                <span class="badge" id="paymentStatusBadge"></span>
-                            </div>
-
-                            <!-- Order Status -->
-                            <div class="mb-4">
-                                <h6><i class="fas fa-box me-2"></i>Status Pengiriman</h6>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" id="orderProgressBar" role="progressbar"></div>
-                                </div>
-                                <span class="badge" id="orderStatusBadge"></span>
-                            </div>
-
-                            <!-- Timeline -->
-                            <div class="timeline">
-                                <div class="timeline-item" id="timelinePending">
-                                    <div class="timeline-marker bg-warning"></div>
-                                    <div class="timeline-content">
-                                        <h6>Pesanan Dibuat</h6>
-                                        <p class="text-muted mb-0">Pesanan Anda telah diterima</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item" id="timelinePaid">
-                                    <div class="timeline-marker bg-info"></div>
-                                    <div class="timeline-content">
-                                        <h6>Pembayaran Diterima</h6>
-                                        <p class="text-muted mb-0">Pembayaran Anda telah dikonfirmasi</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item" id="timelineProcessed">
-                                    <div class="timeline-marker bg-primary"></div>
-                                    <div class="timeline-content">
-                                        <h6>Sedang Diproses</h6>
-                                        <p class="text-muted mb-0">Pesanan Anda sedang disiapkan</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item" id="timelineShipped">
-                                    <div class="timeline-marker bg-success"></div>
-                                    <div class="timeline-content">
-                                        <h6>Dikirim</h6>
-                                        <p class="text-muted mb-0">Pesanan Anda telah dikirim</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item" id="timelineCompleted">
-                                    <div class="timeline-marker bg-success"></div>
-                                    <div class="timeline-content">
-                                        <h6>Selesai</h6>
-                                        <p class="text-muted mb-0">Pesanan Anda telah selesai</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Payment Proof (if available) -->
-                    <div id="paymentProofSection" class="card mb-4" style="display: none;">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-image me-2"></i>
-                                Bukti Pembayaran
-                            </h5>
-                        </div>
-                        <div class="card-body text-center">
-                            <img id="paymentProofImage" src="" alt="Bukti Pembayaran" 
-                                 class="img-fluid" style="max-width: 400px;">
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 mb-2">
-                                    <a href="index.html" class="btn btn-outline-primary w-100">
-                                        <i class="fas fa-home me-2"></i>
-                                        Katalog
-                                    </a>
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                    <button class="btn btn-outline-success w-100" id="refreshBtn">
-                                        <i class="fas fa-sync me-2"></i>
-                                        Refresh
-                                    </button>
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                    <button class="btn btn-whatsapp w-100" id="whatsappBtn">
-                                        <i class="fab fa-whatsapp me-2"></i>
-                                        Hubungi Admin
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Order Not Found -->
-        <div id="orderNotFound" class="text-center py-5" style="display: none;">
-            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-            <h4>Pesanan Tidak Ditemukan</h4>
-            <p class="text-muted">Pesanan dengan ID tersebut tidak tersedia.</p>
-            <button class="btn btn-primary" onclick="resetSearch()">
-                <i class="fas fa-search me-1"></i>
-                Cari Lagi
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-store me-2"></i>Toko Online
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="track.html">Track Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-login.html">Admin</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </main>
+    </nav>
+
+    <!-- Track Order Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Search Form -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-search me-2"></i>Track Pesanan
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="trackForm">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="orderIdInput" placeholder="Masukkan Order ID (contoh: ORD-AB12CD)" required>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-search me-1"></i>Track
+                                    </button>
+                                </div>
+                                <small class="text-muted">Order ID terdapat pada email konfirmasi atau halaman sukses pemesanan</small>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" class="text-center py-5" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Mencari pesanan...</p>
+                    </div>
+
+                    <!-- Order Not Found -->
+                    <div id="orderNotFound" class="card shadow border-danger" style="display: none;">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                            <h4>Pesanan Tidak Ditemukan</h4>
+                            <p class="text-muted">Order ID yang Anda masukkan tidak valid atau tidak ditemukan dalam sistem kami.</p>
+                            <p class="text-muted">Pastikan Order ID yang Anda masukkan benar.</p>
+                        </div>
+                    </div>
+
+                    <!-- Order Details -->
+                    <div id="orderDetails" class="card shadow" style="display: none;">
+                        <div class="card-header bg-success text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-box me-2"></i>Detail Pesanan
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Order Info -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h6>Informasi Pesanan</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td><strong>Order ID:</strong></td>
+                                            <td id="detailOrderId"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tanggal:</strong></td>
+                                            <td id="detailDate"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Nama:</strong></td>
+                                            <td id="detailName"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>WhatsApp:</strong></td>
+                                            <td id="detailPhone"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Informasi Produk</h6>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <td><strong>Produk:</strong></td>
+                                            <td id="detailProduct"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Jumlah:</strong></td>
+                                            <td id="detailQuantity"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Harga:</strong></td>
+                                            <td id="detailPrice"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total:</strong></td>
+                                            <td id="detailTotal" class="text-primary fw-bold"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Status Tracking -->
+                            <div class="mb-4">
+                                <h6>Status Pesanan</h6>
+                                
+                                <!-- Payment Status -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span><i class="fas fa-credit-card me-2"></i>Status Pembayaran</span>
+                                        <span id="paymentStatusBadge" class="badge"></span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div id="paymentProgressBar" class="progress-bar" role="progressbar"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Order Status -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span><i class="fas fa-truck me-2"></i>Status Pengiriman</span>
+                                        <span id="orderStatusBadge" class="badge"></span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div id="orderProgressBar" class="progress-bar" role="progressbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Timeline -->
+                            <div class="mb-4">
+                                <h6>Timeline Pesanan</h6>
+                                <div class="timeline">
+                                    <div class="timeline-item completed">
+                                        <div class="timeline-marker bg-success">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <h6>Pesanan Dibuat</h6>
+                                            <p class="text-muted mb-0">Pesanan Anda telah diterima</p>
+                                            <small class="text-muted" id="orderCreatedDate"></small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="paymentConfirmedItem" class="timeline-item">
+                                        <div class="timeline-marker">
+                                            <i class="fas fa-credit-card"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <h6>Pembayaran Dikonfirmasi</h6>
+                                            <p class="text-muted mb-0">Menunggu konfirmasi pembayaran</p>
+                                            <small class="text-muted">-</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="processingItem" class="timeline-item">
+                                        <div class="timeline-marker">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <h6>Sedang Diproses</h6>
+                                            <p class="text-muted mb-0">Pesanan sedang disiapkan</p>
+                                            <small class="text-muted">-</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="shippedItem" class="timeline-item">
+                                        <div class="timeline-marker">
+                                            <i class="fas fa-truck"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <h6>Dikirim</h6>
+                                            <p class="text-muted mb-0">Pesanan dalam perjalanan</p>
+                                            <small class="text-muted">-</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="deliveredItem" class="timeline-item">
+                                        <div class="timeline-marker">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <h6>Selesai</h6>
+                                            <p class="text-muted mb-0">Pesanan telah diterima</p>
+                                            <small class="text-muted">-</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Payment Proof -->
+                            <div id="paymentProofSection" class="mb-4" style="display: none;">
+                                <h6>Bukti Pembayaran</h6>
+                                <div class="text-center">
+                                    <img id="paymentProofImage" src="" alt="Bukti Pembayaran" class="img-fluid" style="max-width: 300px;">
+                                </div>
+                            </div>
+
+                            <!-- Notes -->
+                            <div id="notesSection" class="mb-4" style="display: none;">
+                                <h6>Catatan</h6>
+                                <div class="alert alert-info">
+                                    <p id="customerNote" class="mb-0"></p>
+                                </div>
+                                <div id="adminNotes" class="alert alert-warning" style="display: none;">
+                                    <h6>Catatan Admin:</h6>
+                                    <p id="adminNoteText" class="mb-0"></p>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <button class="btn btn-primary" onclick="refreshTracking()">
+                                    <i class="fas fa-sync me-2"></i>Refresh Status
+                                </button>
+                                <a href="index.html" class="btn btn-outline-secondary">
+                                    <i class="fas fa-shopping-bag me-2"></i>Lanjut Belanja
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="bg-light py-4 mt-5">
-        <div class="container text-center">
-            <p class="mb-0 text-muted">&copy; 2024 Toko Online. All rights reserved.</p>
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Toko Online</h5>
+                    <p>Menyediakan produk berkualitas dengan harga terjangkau</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Kontak</h5>
+                    <p><i class="fab fa-whatsapp me-2"></i>WhatsApp: +62 812-3456-7890</p>
+                    <p><i class="fas fa-envelope me-2"></i>Email: info@toko.com</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2024 Toko Online. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
     <script src="script.js"></script>
     <script>
-        let currentOrder = null;
+        let currentOrderId = null;
 
-        // Initialize page
+        // Load order ID from URL parameter if available
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const orderId = urlParams.get('id');
             
             if (orderId) {
                 document.getElementById('orderIdInput').value = orderId;
-                searchOrder();
+                trackOrder(orderId);
             }
-            
-            // Search button
-            document.getElementById('searchBtn').addEventListener('click', searchOrder);
-            
-            // Enter key on input
-            document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchOrder();
-                }
-            });
-            
-            // Refresh button
-            document.getElementById('refreshBtn').addEventListener('click', function() {
-                if (currentOrder) {
-                    loadOrder(currentOrder.order_id);
-                }
-            });
-            
-            // WhatsApp button
-            document.getElementById('whatsappBtn').addEventListener('click', contactWhatsApp);
         });
 
-        // Search order
-        function searchOrder() {
+        // Handle form submission
+        document.getElementById('trackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             const orderId = document.getElementById('orderIdInput').value.trim();
-            
-            if (!orderId) {
-                showAlert('Silakan masukkan Order ID', 'warning');
-                return;
+            if (orderId) {
+                trackOrder(orderId);
             }
+        });
+
+        function trackOrder(orderId) {
+            currentOrderId = orderId;
+            showLoading();
             
-            loadOrder(orderId);
+            fetch(`${API_BASE_URL}/track?id=${orderId}`)
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.status === 'success') {
+                        displayOrderDetails(data.data);
+                    } else {
+                        showOrderNotFound();
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showError('Gagal memuat data pesanan. Silakan coba lagi.');
+                });
         }
 
-        // Load order from API
-        async function loadOrder(orderId) {
-            try {
-                document.getElementById('loading').style.display = 'block';
-                document.getElementById('orderDetails').style.display = 'none';
-                document.getElementById('orderNotFound').style.display = 'none';
-                
-                const response = await fetch(`${API_BASE_URL}/track?id=${orderId}`);
-                const order = await response.json();
-                
-                document.getElementById('loading').style.display = 'none';
-                
-                if (order.error) {
-                    showOrderNotFound();
-                    return;
-                }
-                
-                currentOrder = order;
-                displayOrderInfo(order);
-                
-            } catch (error) {
-                console.error('Error loading order:', error);
-                document.getElementById('loading').style.display = 'none';
-                showAlert('Gagal memuat informasi pesanan. Silakan coba lagi.', 'danger');
-            }
-        }
-
-        // Display order information
-        function displayOrderInfo(order) {
-            // Order info
-            document.getElementById('orderId').textContent = order.order_id;
-            document.getElementById('orderDate').textContent = formatDate(order.date);
-            document.getElementById('customerName').textContent = order.name;
-            document.getElementById('customerPhone').textContent = order.phone;
-            document.getElementById('productName').textContent = order.product_name;
-            document.getElementById('productQuantity').textContent = order.qty;
-            document.getElementById('paymentMethod').textContent = order.payment_method;
-            document.getElementById('totalPrice').textContent = `Rp ${formatNumber(order.total_price)}`;
+        function displayOrderDetails(order) {
+            // Update order info
+            document.getElementById('detailOrderId').textContent = order.order_id;
+            document.getElementById('detailDate').textContent = order.date;
+            document.getElementById('detailName').textContent = order.name;
+            document.getElementById('detailPhone').textContent = order.phone;
             
-            // Notes (if available)
-            if (order.note) {
-                document.getElementById('customerNotes').textContent = order.note;
-                document.getElementById('notesSection').style.display = 'block';
-            } else {
-                document.getElementById('notesSection').style.display = 'none';
-            }
+            // Update product info
+            document.getElementById('detailProduct').textContent = order.product_name;
+            document.getElementById('detailQuantity').textContent = order.qty;
+            document.getElementById('detailPrice').textContent = formatCurrency(order.price);
+            document.getElementById('detailTotal').textContent = formatCurrency(order.total_price);
             
-            // Payment proof (if available)
+            // Update payment status
+            updatePaymentStatus(order.payment_status);
+            
+            // Update order status
+            updateOrderStatus(order.order_status);
+            
+            // Update timeline
+            updateTimeline(order);
+            
+            // Show payment proof if exists
             if (order.payment_proof) {
                 document.getElementById('paymentProofImage').src = order.payment_proof;
                 document.getElementById('paymentProofSection').style.display = 'block';
@@ -365,252 +353,141 @@
                 document.getElementById('paymentProofSection').style.display = 'none';
             }
             
-            // Status badges and progress bars
-            updateStatusDisplay(order);
-            
-            // Timeline
-            updateTimeline(order);
-            
-            document.getElementById('orderDetails').style.display = 'block';
-        }
-
-        // Update status display
-        function updateStatusDisplay(order) {
-            // Payment status
-            const paymentStatus = order.payment_status;
-            const paymentBadge = document.getElementById('paymentStatusBadge');
-            const paymentProgress = document.getElementById('paymentProgressBar');
-            
-            paymentBadge.textContent = getPaymentStatusText(paymentStatus);
-            paymentBadge.className = `badge ${getPaymentStatusClass(paymentStatus)}`;
-            
-            if (paymentStatus === 'Dibayar') {
-                paymentProgress.style.width = '100%';
-                paymentProgress.className = 'progress-bar bg-success';
-            } else if (paymentStatus === 'Gagal') {
-                paymentProgress.style.width = '100%';
-                paymentProgress.className = 'progress-bar bg-danger';
-            } else {
-                paymentProgress.style.width = '50%';
-                paymentProgress.className = 'progress-bar bg-warning';
-            }
-            
-            // Order status
-            const orderStatus = order.order_status;
-            const orderBadge = document.getElementById('orderStatusBadge');
-            const orderProgress = document.getElementById('orderProgressBar');
-            
-            orderBadge.textContent = getOrderStatusText(orderStatus);
-            orderBadge.className = `badge ${getOrderStatusClass(orderStatus)}`;
-            
-            const progressMap = {
-                'Pending': '20%',
-                'Diproses': '60%',
-                'Dikirim': '80%',
-                'Selesai': '100%'
-            };
-            
-            orderProgress.style.width = progressMap[orderStatus] || '20%';
-            orderProgress.className = `progress-bar ${getOrderStatusProgressClass(orderStatus)}`;
-        }
-
-        // Update timeline
-        function updateTimeline(order) {
-            const timelineItems = {
-                'timelinePending': true, // Always active
-                'timelinePaid': order.payment_status === 'Dibayar',
-                'timelineProcessed': order.order_status === 'Diproses' || order.order_status === 'Dikirim' || order.order_status === 'Selesai',
-                'timelineShipped': order.order_status === 'Dikirim' || order.order_status === 'Selesai',
-                'timelineCompleted': order.order_status === 'Selesai'
-            };
-            
-            Object.keys(timelineItems).forEach(itemId => {
-                const item = document.getElementById(itemId);
-                const marker = item.querySelector('.timeline-marker');
+            // Show notes if exists
+            if (order.note || order.admin_notes) {
+                document.getElementById('notesSection').style.display = 'block';
+                document.getElementById('customerNote').textContent = order.note || 'Tidak ada catatan dari pelanggan.';
                 
-                if (timelineItems[itemId]) {
-                    marker.classList.remove('bg-secondary');
-                    marker.classList.add('bg-success');
-                    item.classList.add('active');
+                if (order.admin_notes) {
+                    document.getElementById('adminNoteText').textContent = order.admin_notes;
+                    document.getElementById('adminNotes').style.display = 'block';
                 } else {
-                    marker.classList.remove('bg-success');
-                    marker.classList.add('bg-secondary');
-                    item.classList.remove('active');
+                    document.getElementById('adminNotes').style.display = 'none';
                 }
-            });
+            } else {
+                document.getElementById('notesSection').style.display = 'none';
+            }
+            
+            // Show order details
+            document.getElementById('orderDetails').style.display = 'block';
+            document.getElementById('orderNotFound').style.display = 'none';
         }
 
-        // Get payment status text
-        function getPaymentStatusText(status) {
-            const statusMap = {
-                'Pending': 'Menunggu Pembayaran',
-                'Dibayar': 'Sudah Dibayar',
-                'Gagal': 'Pembayaran Gagal'
-            };
-            return statusMap[status] || status;
-        }
-
-        // Get payment status class
-        function getPaymentStatusClass(status) {
-            const classMap = {
-                'Pending': 'bg-warning',
-                'Dibayar': 'bg-success',
-                'Gagal': 'bg-danger'
-            };
-            return classMap[status] || 'bg-secondary';
-        }
-
-        // Get order status text
-        function getOrderStatusText(status) {
-            const statusMap = {
-                'Pending': 'Menunggu Proses',
-                'Diproses': 'Sedang Diproses',
-                'Dikirim': 'Sedang Dikirim',
-                'Selesai': 'Selesai'
-            };
-            return statusMap[status] || status;
-        }
-
-        // Get order status class
-        function getOrderStatusClass(status) {
-            const classMap = {
-                'Pending': 'bg-warning',
-                'Diproses': 'bg-primary',
-                'Dikirim': 'bg-info',
-                'Selesai': 'bg-success'
-            };
-            return classMap[status] || 'bg-secondary';
-        }
-
-        // Get order status progress class
-        function getOrderStatusProgressClass(status) {
-            const classMap = {
-                'Pending': 'bg-warning',
-                'Diproses': 'bg-primary',
-                'Dikirim': 'bg-info',
-                'Selesai': 'bg-success'
-            };
-            return classMap[status] || 'bg-secondary';
-        }
-
-        // Contact WhatsApp
-        function contactWhatsApp() {
-            if (currentOrder) {
-                const message = `Halo, saya ingin menanyakan pesanan saya dengan Order ID: ${currentOrder.order_id}`;
-                const whatsappUrl = `https://wa.me/628123456789?text=${encodeURIComponent(message)}`;
-                window.open(whatsappUrl, '_blank');
+        function updatePaymentStatus(status) {
+            const badge = document.getElementById('paymentStatusBadge');
+            const progressBar = document.getElementById('paymentProgressBar');
+            
+            badge.className = 'badge';
+            progressBar.className = 'progress-bar';
+            
+            switch(status) {
+                case 'Dibayar':
+                    badge.classList.add('bg-success');
+                    badge.textContent = 'Dibayar';
+                    progressBar.style.width = '100%';
+                    progressBar.classList.add('bg-success');
+                    break;
+                case 'Gagal':
+                    badge.classList.add('bg-danger');
+                    badge.textContent = 'Gagal';
+                    progressBar.style.width = '0%';
+                    progressBar.classList.add('bg-danger');
+                    break;
+                default:
+                    badge.classList.add('bg-warning');
+                    badge.textContent = 'Pending';
+                    progressBar.style.width = '50%';
+                    progressBar.classList.add('bg-warning');
             }
         }
 
-        // Show order not found
-        function showOrderNotFound() {
-            document.getElementById('orderNotFound').style.display = 'block';
+        function updateOrderStatus(status) {
+            const badge = document.getElementById('orderStatusBadge');
+            const progressBar = document.getElementById('orderProgressBar');
+            
+            badge.className = 'badge';
+            progressBar.className = 'progress-bar';
+            
+            switch(status) {
+                case 'Selesai':
+                    badge.classList.add('bg-success');
+                    badge.textContent = 'Selesai';
+                    progressBar.style.width = '100%';
+                    progressBar.classList.add('bg-success');
+                    break;
+                case 'Dikirim':
+                    badge.classList.add('bg-info');
+                    badge.textContent = 'Dikirim';
+                    progressBar.style.width = '75%';
+                    progressBar.classList.add('bg-info');
+                    break;
+                case 'Diproses':
+                    badge.classList.add('bg-primary');
+                    badge.textContent = 'Diproses';
+                    progressBar.style.width = '50%';
+                    progressBar.classList.add('bg-primary');
+                    break;
+                default:
+                    badge.classList.add('bg-warning');
+                    badge.textContent = 'Pending';
+                    progressBar.style.width = '25%';
+                    progressBar.classList.add('bg-warning');
+            }
         }
 
-        // Reset search
-        function resetSearch() {
-            document.getElementById('orderIdInput').value = '';
+        function updateTimeline(order) {
+            // Reset all timeline items
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                item.classList.remove('completed', 'active');
+            });
+            
+            // Set order created date
+            document.getElementById('orderCreatedDate').textContent = order.date;
+            
+            // Update timeline based on status
+            const paymentConfirmed = order.payment_status === 'Dibayar';
+            const processing = order.order_status === 'Diproses' || order.order_status === 'Dikirim' || order.order_status === 'Selesai';
+            const shipped = order.order_status === 'Dikirim' || order.order_status === 'Selesai';
+            const delivered = order.order_status === 'Selesai';
+            
+            if (paymentConfirmed) {
+                document.getElementById('paymentConfirmedItem').classList.add('completed');
+            }
+            
+            if (processing) {
+                document.getElementById('processingItem').classList.add('completed');
+            }
+            
+            if (shipped) {
+                document.getElementById('shippedItem').classList.add('completed');
+            }
+            
+            if (delivered) {
+                document.getElementById('deliveredItem').classList.add('completed');
+            }
+        }
+
+        function refreshTracking() {
+            if (currentOrderId) {
+                trackOrder(currentOrderId);
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
             document.getElementById('orderDetails').style.display = 'none';
             document.getElementById('orderNotFound').style.display = 'none';
-            document.getElementById('orderIdInput').focus();
         }
 
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
         }
 
-        // Format number
-        function formatNumber(num) {
-            return new Intl.NumberFormat('id-ID').format(num);
-        }
-
-        // Show alert
-        function showAlert(message, type = 'info') {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
+        function showOrderNotFound() {
+            hideLoading();
+            document.getElementById('orderDetails').style.display = 'none';
+            document.getElementById('orderNotFound').style.display = 'block';
         }
     </script>
-
-    <style>
-        .timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-        
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #dee2e6;
-        }
-        
-        .timeline-item {
-            position: relative;
-            margin-bottom: 30px;
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
-        
-        .timeline-item.active {
-            opacity: 1;
-        }
-        
-        .timeline-marker {
-            position: absolute;
-            left: -22px;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 2px #dee2e6;
-        }
-        
-        .timeline-item.active .timeline-marker {
-            box-shadow: 0 0 0 2px #28a745;
-        }
-        
-        .timeline-content h6 {
-            margin-bottom: 5px;
-            color: #495057;
-        }
-        
-        .timeline-item.active .timeline-content h6 {
-            color: #28a745;
-        }
-        
-        .btn-whatsapp {
-            background-color: #25d366;
-            border-color: #25d366;
-            color: white;
-        }
-        
-        .btn-whatsapp:hover {
-            background-color: #128c7e;
-            border-color: #128c7e;
-            color: white;
-        }
-    </style>
 </body>
 </html>
