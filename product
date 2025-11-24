@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - Toko Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-primary text-white py-3">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-arrow-left me-2" onclick="history.back()" style="cursor: pointer;"></i>
+                        Detail Produk
+                    </h1>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="index.html" class="btn btn-light btn-sm">
+                        <i class="fas fa-home me-1"></i>
+                        Katalog
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <!-- Loading -->
+        <div id="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Memuat detail produk...</p>
+        </div>
+
+        <!-- Product Details -->
+        <div id="productDetails" style="display: none;">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <img id="productImage" src="" class="card-img-top" alt="">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 id="productName" class="card-title"></h2>
+                            <p class="h4 text-primary" id="productPrice"></p>
+                            <p><strong>Stok:</strong> <span id="productStock"></span></p>
+                            <p id="productDescription"></p>
+                            
+                            <div class="mt-4">
+                                <label for="quantity" class="form-label">Jumlah:</label>
+                                <div class="input-group" style="max-width: 200px;">
+                                    <button class="btn btn-outline-secondary" type="button" id="decreaseQty">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="form-control text-center" id="quantity" value="1" min="1">
+                                    <button class="btn btn-outline-secondary" type="button" id="increaseQty">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <p><strong>Total Harga:</strong></p>
+                                <p class="h3 text-primary" id="totalPrice">Rp 0</p>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-primary btn-lg" id="orderBtn">
+                                    <i class="fas fa-shopping-cart me-2"></i>
+                                    Pesan Sekarang
+                                </button>
+                                <a href="index.html" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i>
+                                    Kembali ke Katalog
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Not Found -->
+        <div id="productNotFound" class="text-center py-5" style="display: none;">
+            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+            <h4>Produk Tidak Ditemukan</h4>
+            <p class="text-muted">Produk yang Anda cari tidak tersedia.</p>
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home me-1"></i>
+                Kembali ke Katalog
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0 text-muted">&copy; 2024 Toko Online. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let currentProduct = null;
+
+        // Load product details when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (productId) {
+                loadProduct(productId);
+            } else {
+                showProductNotFound();
+            }
+            
+            // Quantity controls
+            document.getElementById('decreaseQty').addEventListener('click', function() {
+                const qtyInput = document.getElementById('quantity');
+                if (qtyInput.value > 1) {
+                    qtyInput.value = parseInt(qtyInput.value) - 1;
+                    updateTotalPrice();
+                }
+            });
+            
+            document.getElementById('increaseQty').addEventListener('click', function() {
+                const qtyInput = document.getElementById('quantity');
+                const maxStock = currentProduct ? currentProduct.stock : 999;
+                if (parseInt(qtyInput.value) < maxStock) {
+                    qtyInput.value = parseInt(qtyInput.value) + 1;
+                    updateTotalPrice();
+                }
+            });
+            
+            document.getElementById('quantity').addEventListener('input', updateTotalPrice);
+            
+            // Order button
+            document.getElementById('orderBtn').addEventListener('click', function() {
+                const quantity = parseInt(document.getElementById('quantity').value);
+                if (currentProduct && quantity > 0) {
+                    window.location.href = `order.html?product=${currentProduct.id}&qty=${quantity}`;
+                }
+            });
+        });
+
+        // Load product from API
+        async function loadProduct(productId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/product?id=${productId}`);
+                const product = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                if (product.error) {
+                    showProductNotFound();
+                    return;
+                }
+                
+                currentProduct = product;
+                displayProduct(product);
+                
+            } catch (error) {
+                console.error('Error loading product:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Gagal memuat detail produk. Silakan refresh halaman.
+                    </div>
+                `;
+            }
+        }
+
+        // Display product details
+        function displayProduct(product) {
+            document.getElementById('productImage').src = product.image || `https://picsum.photos/seed/${product.id}/400/300.jpg`;
+            document.getElementById('productImage').alt = product.name;
+            document.getElementById('productName').textContent = product.name;
+            document.getElementById('productPrice').textContent = `Rp ${formatNumber(product.price)}`;
+            document.getElementById('productStock').textContent = product.stock > 0 ? product.stock : 'Habis';
+            document.getElementById('productDescription').textContent = product.description || 'Tidak ada deskripsi produk.';
+            
+            // Set max quantity
+            const qtyInput = document.getElementById('quantity');
+            qtyInput.max = product.stock > 0 ? product.stock : 1;
+            
+            if (product.stock <= 0) {
+                qtyInput.disabled = true;
+                document.getElementById('decreaseQty').disabled = true;
+                document.getElementById('increaseQty').disabled = true;
+                document.getElementById('orderBtn').disabled = true;
+                document.getElementById('orderBtn').innerHTML = `
+                    <i class="fas fa-times me-2"></i>
+                    Stok Habis
+                `;
+            }
+            
+            updateTotalPrice();
+            document.getElementById('productDetails').style.display = 'block';
+        }
+
+        // Show product not found
+        function showProductNotFound() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('productNotFound').style.display = 'block';
+        }
+
+        // Update total price
+        function updateTotalPrice() {
+            if (!currentProduct) return;
+            
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const totalPrice = currentProduct.price * quantity;
+            document.getElementById('totalPrice').textContent = `Rp ${formatNumber(totalPrice)}`;
+        }
+
+        // Format number
+        function formatNumber(num) {
+            return new Intl.NumberFormat('id-ID').format(num);
+        }
+    </script>
+</body>
+</html>
